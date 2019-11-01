@@ -14,7 +14,7 @@
 ## Как установить приложение
 1. Скачиваем репозиторий 
 ```
-git clone https://github.com/ufan4ik/todoapp.git
+git clone https://github.com/rpulatov/todoapp.git
 cd todoapp
 ```    
 2. Устанавливаем зависимости
