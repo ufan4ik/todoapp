@@ -3,22 +3,21 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 
 import Header from './components/Header'
-import Page from './components/Page'
+import Container from './components/Container'
 import MainPage from './pages/MainPage'
 import ProjectPage from './pages/ProjectPage'
 
 class App extends React.Component {
-
   render() {
     return (
       <div>
         <Header/>
-        <Page>
+        <Container>
           <Switch>
-              <Route exact path="/" component={MainPage}/>
+              <Route exact path={["/","/projects"]} component={MainPage}/>
               <Route exact path="/project/:id" component={ProjectPage}/>
           </Switch>
-        </Page>
+        </Container>
       </div>
     )
   }

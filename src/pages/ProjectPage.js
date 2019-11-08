@@ -14,6 +14,20 @@ export default class ProjectPage extends Component {
     })
   }
 
+  getData = () => {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve()
+      } catch (e) {
+        reject()
+      }
+    })
+  }
+
+  getData2 = async () => {
+    await this.getData()
+  }
+
   render() {
     const { data } = this.state
 
