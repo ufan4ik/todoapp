@@ -1,43 +1,51 @@
-import React from "react"
-
-import { Link } from "react-router-dom"
+import React, { useEffect, useCallback } from "react"
 
 import { getProjects } from "../api/projects"
 
-class MainPage extends React.Component {
-  state = {
-    projects: [],
-    loading: false,
-    error: null
-  }
+function MainPage(props) {
+  const [projects, setProjects] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
 
-  componentDidMount = () => {
-    this.setState({ loading: true })
+  useEffect(() => {
+    setLoading(true)
     getProjects()
       .then(response => {
-        this.setState({ loading: false, projects: response })
+        setProjects(response)
+        setLoading(false)
       })
       .catch(e => {
-        this.setState({ loading: false, error: e.message })
+        setError(e.message)
+        setLoading(false)
       })
-  }
+  }, [])
 
-  render() {
-    return this.state.loading ? (
-      <div>Загрузка...</div>
-    ) : (
-      <ul>
-        {this.state.projects.map(item => (
-          <li key={item.id}>
-            <Link to={`/project/${item.id}`}>
-              <h2>{item.name}</h2>
-            </Link>
-            <span>Комментарии: {item.comment_count}</span>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+  const onClick = useCallback(
+    item => {
+      props.history.push(`/project/${item.id}`)
+    },
+    [props.history]
+  )
+
+  return (
+    <>
+      {loading ? (
+        <div>Загрузка...</div>
+      ) : error ? (
+        <div>Ошибка запроса: {error}</div>
+      ) : (
+        <ul>
+          {projects.map(item => (
+            <li key={item.id}>
+              <button onClick={() => onClick(item)}>
+                <h2>{item.name}</h2>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  )
 }
 
 export default MainPage
