@@ -1,39 +1,57 @@
-import React, { Component } from "react"
+import React, { useEffect, useCallback } from "react"
 
-import { getProject } from "../api/projects"
+import { getProjects } from "../api/projects"
 import Tasks from "../components/Tasks"
-import { ProjectContext } from "../contexts/ProjectContext"
+import Sidebar from '../components/Sidebar'
 
-class ProjectPage extends Component {
-  state = {
-    data: null
-  }
+function ProjectPage(props) {
+  const [projects, setProjects] = React.useState([])
+  const [loadingProjects, setLoadingProjects] = React.useState(false)
 
-  componentDidMount() {
-    const { id } = this.props.match.params
-    getProject(id).then(response => {
-      this.setState({ data: response })
-    })
-  }
+  const { id: projectId } = props.match.params
 
-  render() {
-    const { data } = this.state
+  useEffect(() => {
+    setLoadingProjects(true)
+    getProjects()
+      .then(response => {
+        setProjects(response)
+        setLoadingProjects(false)
+      })
+      .catch(e => {
+        setLoadingProjects(false)
+      })
+  }, [])
 
-    return (
-      <ProjectContext.Provider value={data}>
-        <div>
-          {data ? (
-            <div>
-              <h2>Название проекта: {data.name}</h2>
-            </div>
-          ) : (
-            <span>Загрузка...</span>
-          )}
-          <Tasks />
-        </div>
-      </ProjectContext.Provider>
-    )
-  }
+  const onClick = useCallback(
+    item => {
+      props.history.push(`/project/${item.id}`)
+    },
+    [props.history]
+  )
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        padding: "40px 0px"
+      }}
+    >
+      <Sidebar>
+        {loadingProjects && <span>Загрузка...</span>}
+        {projects.map(item => (
+          <div
+            key={item.id}
+            style={item.id === projectId ? { border: "1px solid #333" } : null}
+            onClick={() => onClick(item)}
+          >
+            {item.name}
+          </div>
+        ))}
+      </Sidebar>
+      <Tasks projectId={projectId} />
+    </div>
+  )
 }
 
 export default ProjectPage

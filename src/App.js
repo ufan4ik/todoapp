@@ -15,7 +15,7 @@ class App extends React.Component {
         <Container>
           <Switch>
               <Route exact path={["/","/projects"]} component={MainPage}/>
-              <Route exact path="/project/:id" component={ProjectPage}/>
+              <Route path="/project/:id" component={ProjectPage}/>
           </Switch>
         </Container>
       </div>
