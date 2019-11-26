@@ -28,10 +28,13 @@ function Tasks(props) {
         padding: "0px 15px"
       }}
     >
-      {loadingTasks && <span>Загрузка задач...</span>}
-      {tasks.map(item => (
-        <div key={item.id}>{item.content}</div>
-      ))}
+      {loadingTasks ? (
+        <span>Загрузка задач...</span>
+      ) : tasks.length > 0 ? (
+        tasks.map(item => <div key={item.id}>{item.content}</div>)
+      ) : (
+        <div>Нет задач</div>
+      )}
     </div>
   )
 }
