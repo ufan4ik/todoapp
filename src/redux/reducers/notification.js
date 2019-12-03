@@ -9,8 +9,8 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case SHOW_NOTIFICATION:
       return {
-        message: action.message,
-        variant: action.variant
+        ...state,
+        ...action.payload
       }
     default:
       return state

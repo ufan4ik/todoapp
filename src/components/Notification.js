@@ -2,7 +2,6 @@ import React from "react"
 
 import { connect } from "react-redux"
 
-import IconButton from "@material-ui/core/IconButton"
 import Snackbar from "@material-ui/core/Snackbar"
 import SnackbarContent from "@material-ui/core/SnackbarContent"
 
@@ -32,16 +31,6 @@ function Notification({ message, variant }) {
       <SnackbarContent
         aria-describedby="client-snackbar"
         message={message}
-        action={[
-          <IconButton
-            key="close"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-          >
-            close
-          </IconButton>
-        ]}
       />
     </Snackbar>
   )
