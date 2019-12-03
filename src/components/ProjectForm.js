@@ -1,9 +1,22 @@
 import React from "react"
 
-import {addProject} from '../api/projects'
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress
+} from "@material-ui/core"
+
+import { addProject } from "../api/projects"
 
 export default function ProjectForm(props) {
-  const [name, setName] = React.useState('')
+  const { open, onClose, onProjectAdded } = props
+
+  const [name, setName] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
 
   const handleChange = e => {
     setName(e.target.value)
@@ -11,27 +24,29 @@ export default function ProjectForm(props) {
 
   const handleSubmit = e => {
     e.preventDefault()
+    setLoading(true)
     addProject({ name }).then(res => {
-
-        console.info({ res })
-        props.onProjectAdded && props.onProjectAdded(res)
+      onProjectAdded && onProjectAdded(res)
+      setLoading(false)
+      onClose()
+    }).catch(() => {
+      setLoading(false)
     })
   }
 
   return (
-    <div
-      style={{
-        width: "300px",
-        height: "300px",
-        border: "1px solid #333",
-        padding: "10px"
-      }}
-    >
-      <h3>Создать новый проект</h3>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Создать новый проект</DialogTitle>
       <form onSubmit={handleSubmit}>
-        <input type="text" value={name} onChange={handleChange} />
-        <button type="submit">Создать</button>
+        <DialogContent>
+          <TextField required fullWidth value={name} onChange={handleChange} />
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" type="submit">
+            Создать {loading && <CircularProgress size={15}/>}
+          </Button>
+        </DialogActions>
       </form>
-    </div>
+    </Dialog>
   )
 }

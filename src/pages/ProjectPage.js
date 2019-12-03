@@ -1,8 +1,12 @@
 import React, { useEffect, useCallback } from "react"
 
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { Grid, Typography, Box } from "@material-ui/core"
+
 import { getProjects } from "../api/projects"
 import Tasks from "../components/Tasks"
-import Sidebar from '../components/Sidebar'
 
 function ProjectPage(props) {
   const [projects, setProjects] = React.useState([])
@@ -30,27 +34,29 @@ function ProjectPage(props) {
   )
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        padding: "40px 0px"
-      }}
-    >
-      <Sidebar>
-        {loadingProjects && <span>Загрузка...</span>}
-        {projects.map(item => (
-          <div
-            key={item.id}
-            style={item.id === projectId ? { border: "1px solid #333" } : null}
-            onClick={() => onClick(item)}
-          >
-            {item.name}
-          </div>
-        ))}
-      </Sidebar>
-      <Tasks projectId={projectId} />
-    </div>
+    <Grid container spacing={3}>
+      <Grid item xs={4}>
+        {loadingProjects && <CircularProgress />}
+        <Tabs orientation="vertical" variant="scrollable" value={projectId}>
+          {projects.map(item => (
+            <Tab
+              key={item.id}
+              value={item.id}
+              label={item.name}
+              onClick={() => onClick(item)}
+            />
+          ))}
+        </Tabs>
+      </Grid>
+      <Grid item xs={8}>
+        <Box mb={2}>
+          <Typography variant="h5" component="h2">
+            Задачи
+          </Typography>
+        </Box>
+        <Tasks projectId={projectId} />
+      </Grid>
+    </Grid>
   )
 }
 

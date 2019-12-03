@@ -1,61 +1,79 @@
 import React, { useEffect, useCallback } from "react"
+import { connect } from "react-redux"
 
-import { getProjects } from "../api/projects"
+import { fetchProjects, addProduct } from "../redux/actions/projects"
 
-import ProjectForm from '../components/ProjectForm'
+import ProjectForm from "../components/ProjectForm"
 
-function MainPage(props) {
-  
-  const [projects, setProjects] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState(null)
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Grid,
+  withStyles
+} from "@material-ui/core"
+import CircularProgress from "@material-ui/core/CircularProgress"
 
+const CardStyled = withStyles({
+  root: {
+    height: "100%"
+  }
+})(Card)
+
+function MainPage({ fetchProjects, addProduct, projects, history }) {
+  const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
-    setLoading(true)
-    getProjects()
-      .then(response => {
-        setProjects(response)
-        setLoading(false)
-      })
-      .catch(e => {
-        setError(e.message)
-        setLoading(false)
-      })
-  }, [])
+    fetchProjects()
+  }, [fetchProjects])
 
   const onClick = useCallback(
     item => {
-      props.history.push(`/project/${item.id}`)
+      history.push(`/project/${item.id}`)
     },
-    [props.history]
+    [history]
   )
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: "wrap",
-    }}>
-      {loading ? (
-        <div>Загрузка...</div>
-      ) : error ? (
-        <div>Ошибка запроса: {error}</div>
-      ) : (
-        projects.map(item => (
-          <div key={item.id} onClick={() => onClick(item)} style={{
-            width: '300px',
-            height: '300px',
-            border: '1px solid #333',
-            padding: '10px'
-          }}>
-            <span>{item.name}</span>
-          </div>
-        ))
-      )}
-      <ProjectForm onProjectAdded={data => setProjects([...projects,data])}/>
-    </div>
+    <>
+      <Grid container direction="row" spacing={1}>
+        {projects.loading && (
+          <Grid item xs={12}>
+            <CircularProgress />
+          </Grid>
+        )}
+        {projects.data.map(item => (
+          <Grid key={item.id} item xs={4}>
+            <CardStyled onClick={() => onClick(item)}>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {item.name}
+                </Typography>
+              </CardContent>
+            </CardStyled>
+          </Grid>
+        ))}
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+          >
+            Новый проект
+          </Button>
+        </Grid>
+      </Grid>
+      <ProjectForm
+        open={open}
+        onClose={() => setOpen(false)}
+        onProjectAdded={addProduct}
+      />
+    </>
   )
 }
 
-export default MainPage
+export default connect(state => ({ projects: state.projects }), {
+  fetchProjects,
+  addProduct
+})(MainPage)

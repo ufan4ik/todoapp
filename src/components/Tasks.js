@@ -1,42 +1,50 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useEffect } from "react"
+import { connect } from "react-redux"
 
-import { getTasksByProject, addTask } from "../api/tasks"
+import {
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Box
+} from "@material-ui/core"
+import CircularProgress from "@material-ui/core/CircularProgress"
 
-function Tasks(props) {
-  const [tasks, setTasks] = React.useState([])
-  const [loadingTasks, setLoadingTasks] = React.useState(false)
+import { fetchTasks } from "../redux/actions/tasks"
 
+function Tasks({ projectId, fetchTasks, tasks }) {
   useEffect(() => {
-    if (props.projectId) {
-      setLoadingTasks(true)
-      getTasksByProject(props.projectId)
-        .then(response => {
-          setTasks(response)
-          setLoadingTasks(false)
-        })
-        .catch(e => {
-          setLoadingTasks(false)
-        })
+    if (projectId) {
+      fetchTasks(projectId)
     }
-  }, [props.projectId])
+  }, [projectId, fetchTasks])
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: "0px 15px"
-      }}
-    >
-      {loadingTasks ? (
-        <span>Загрузка задач...</span>
-      ) : tasks.length > 0 ? (
-        tasks.map(item => <div key={item.id}>{item.content}</div>)
-      ) : (
-        <div>Нет задач</div>
+    <Paper>
+      {(tasks.loading || tasks.data.length === 0) && (
+        <Box display="flex" justifyContent="center" py={5}>
+          {tasks.loading && <CircularProgress />}
+          {tasks.data.length === 0 && !tasks.loading ? (
+            <Typography variant="h5" component="h5">
+              Нет задач
+            </Typography>
+          ) : null}
+        </Box>
       )}
-    </div>
+      {tasks.data.length > 0 && (
+        <List>
+          {tasks.data.map(item => (
+            <ListItem key={item.id}>
+              <ListItemText primary={item.content} />
+            </ListItem>
+          ))}
+        </List>
+      )}
+    </Paper>
   )
 }
 
-export default Tasks
+export default connect(state => ({ tasks: state.tasks }), {
+  fetchTasks
+})(Tasks)
