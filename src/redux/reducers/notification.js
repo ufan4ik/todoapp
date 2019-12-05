@@ -1,6 +1,6 @@
 import { SHOW_NOTIFICATION } from "../actions/notification"
 
-const initialState = {
+export const initialState = {
   message: null,
   variant: null
 }

@@ -1,7 +1,5 @@
 import React from "react"
-
-import { withRouter } from "react-router-dom"
-
+import { useRouter } from 'next/router'
 import { Typography, Breadcrumbs, Link, Icon } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 
@@ -20,18 +18,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Header = ({ history }) => {
+const Header = () => {
   const classes = useStyles()
+  const router = useRouter()
 
   return (
     <div className={classes.header}>
       <Typography variant="h3">ToDo application</Typography>
-      {history.location.pathname !== "/" ? (
+      {router.route !== '/' ? (
         <Breadcrumbs aria-label="breadcrumb">
           <Link
             color="inherit"
             className={classes.link}
-            onClick={() => history.push("/")}
+            onClick={() => router.push("/")}
           >
             <Icon className={classes.icon}>home</Icon>
             Главная
@@ -42,4 +41,4 @@ const Header = ({ history }) => {
   )
 }
 
-export default withRouter(Header)
+export default Header

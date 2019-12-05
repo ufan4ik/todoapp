@@ -4,7 +4,7 @@ import {
   FETCH_TASKS_FAILURE
 } from "../actions/tasks"
 
-const initialState = {
+export const initialState = {
   data: [],
   loading: false,
   error: null

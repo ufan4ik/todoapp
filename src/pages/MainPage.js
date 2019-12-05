@@ -1,5 +1,6 @@
-import React, { useEffect, useCallback } from "react"
+import React, { useCallback } from "react"
 import { connect } from "react-redux"
+import { useRouter } from 'next/router'
 
 import { fetchProjects, addProduct } from "../redux/actions/projects"
 
@@ -23,16 +24,19 @@ const CardStyled = withStyles({
 
 function MainPage({ fetchProjects, addProduct, projects, history }) {
   const [open, setOpen] = React.useState(false)
+  const router = useRouter()
 
-  useEffect(() => {
-    fetchProjects()
-  }, [fetchProjects])
 
   const onClick = useCallback(
     item => {
-      history.push(`/project/${item.id}`)
+      router.push(
+        {
+          pathname: '/project/detail',
+          query: { id: item.id }
+        }, '/project/' + item.id
+      )
     },
-    [history]
+    [router]
   )
 
   return (
@@ -43,7 +47,7 @@ function MainPage({ fetchProjects, addProduct, projects, history }) {
             <CircularProgress />
           </Grid>
         )}
-        {projects.data.map(item => (
+        {projects.data && projects.data.map(item => (
           <Grid key={item.id} item xs={4}>
             <CardStyled onClick={() => onClick(item)}>
               <CardContent>
@@ -73,7 +77,12 @@ function MainPage({ fetchProjects, addProduct, projects, history }) {
   )
 }
 
+MainPage.getInitialProps = async ({ reduxStore, req, isServer }) => {
+  await reduxStore.dispatch(fetchProjects())
+  return { isServer }
+}
+
 export default connect(state => ({ projects: state.projects }), {
-  fetchProjects,
+  /* fetchProjects, */
   addProduct
 })(MainPage)

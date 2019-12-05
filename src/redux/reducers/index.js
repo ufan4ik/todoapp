@@ -1,7 +1,13 @@
 import { combineReducers } from "redux"
-import projects from "./projects"
-import tasks from "./tasks"
-import notification from './notification'
+import projects, { initialState as projectsState } from "./projects"
+import tasks, { initialState as tasksState } from "./tasks"
+import notification, { initialState as notificationState } from './notification'
+
+export const exampleInitialState = {
+	projects: projectsState,
+	tasks: tasksState,
+	notification: notificationState,
+}
 
 const rootReducer = combineReducers({ projects, tasks, notification })
 

@@ -27,7 +27,7 @@ const fetchProjectsFailure = error => ({
 export const fetchProjects = () => {
   return dispatch => {
     dispatch(fetchProjectsRequest())
-    getProjects()
+    return getProjects()
       .then(response => {
         dispatch(fetchProjectsSuccess(response))
       })

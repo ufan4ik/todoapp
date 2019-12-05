@@ -5,7 +5,7 @@ import {
   PROJECTS_ADD
 } from "../actions/projects"
 
-const initialState = {
+export const initialState = {
   data: [],
   loading: false,
   error: null
