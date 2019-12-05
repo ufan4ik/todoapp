@@ -15,7 +15,12 @@ function ProjectPage({ projectId, projects }) {
 
   const onClick = useCallback(
     item => {
-      Router.push(`/project/${item.id}`)
+      Router.push(
+        {
+          pathname: '/project/detail',
+          query: { id: item.id }
+        }, '/project/' + item.id
+      )
     },
     []
   )
@@ -23,7 +28,6 @@ function ProjectPage({ projectId, projects }) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={4}>
-        {projects.loading && <CircularProgress />}
         <Tabs orientation="vertical" variant="scrollable" value={projectId}>
           {projects.data && projects.data.map(item => (
             <Tab
@@ -34,6 +38,7 @@ function ProjectPage({ projectId, projects }) {
             />
           ))}
         </Tabs>
+        {projects.loading && <CircularProgress />}
       </Grid>
       <Grid item xs={8}>
         <Box mb={2}>

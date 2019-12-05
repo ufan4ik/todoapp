@@ -51,7 +51,7 @@ function MainPage({ fetchProjects, addProduct, projects, history }) {
           <Grid key={item.id} item xs={4}>
             <CardStyled onClick={() => onClick(item)}>
               <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h6" component="h2">
                   {item.name}
                 </Typography>
               </CardContent>
