@@ -23,5 +23,5 @@ npm i
 ```
 3. Запуск приложения на localhost
 ```
-npm run start
+npm run dev
 ```
