@@ -5,47 +5,48 @@ import Tab from "@material-ui/core/Tab"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Grid, Typography, Box } from "@material-ui/core"
 
-import { getProjects, IProject } from "../api/projects"
+import { IProject } from "../api/projects"
 import Tasks from "../components/Tasks"
 
 import { RouteComponentProps } from "react-router-dom"
+import { ApplicationState } from '../redux/reducers'
+import { fetchProjects } from "../redux/actions/projects"
+import { connect } from "react-redux"
 
 
-export interface ProjectPageProps extends RouteComponentProps<{ id: string }> {
-
+interface StateProps {
+  projects: {
+    loading: boolean
+    data: IProject[]
+  }
+}
+interface DispatchProps {
+  fetchProjects: () => void
 }
 
-const ProjectPage: React.FC<ProjectPageProps> = (props) => {
-  const [projects, setProjects] = React.useState<IProject[]>([])
-  const [loadingProjects, setLoadingProjects] = React.useState(false)
+type ProjectPageProps = StateProps & DispatchProps & RouteComponentProps<{ id: string }>
 
-  const { id: projectId } = props.match.params
+const ProjectPage: React.FC<ProjectPageProps> = ({ projects, fetchProjects, match, history }) => {
+
+  const { id: projectId } = match.params
 
   useEffect(() => {
-    setLoadingProjects(true)
-    getProjects()
-      .then(response => {
-        setProjects(response)
-        setLoadingProjects(false)
-      })
-      .catch(e => {
-        setLoadingProjects(false)
-      })
-  }, [])
+    fetchProjects()
+  }, [fetchProjects])
 
   const onClick = useCallback(
     item => {
-      props.history.push(`/project/${item.id}`)
+      history.push(`/project/${item.id}`)
     },
-    [props.history]
+    [history]
   )
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={4}>
-        {loadingProjects && <CircularProgress />}
+        {projects.loading && <CircularProgress />}
         <Tabs orientation="vertical" variant="scrollable" value={projectId}>
-          {projects.map(item => (
+          {projects.data.map(item => (
             <Tab
               key={item.id}
               value={item.id}
@@ -67,4 +68,11 @@ const ProjectPage: React.FC<ProjectPageProps> = (props) => {
   )
 }
 
-export default ProjectPage
+
+const mapStateToProps = (state: ApplicationState) => ({ projects: state.projects })
+
+const mapDispatch = {
+  fetchProjects
+}
+
+export default connect(mapStateToProps, mapDispatch)(ProjectPage)
