@@ -5,11 +5,18 @@ import Tab from "@material-ui/core/Tab"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Grid, Typography, Box } from "@material-ui/core"
 
-import { getProjects } from "../api/projects"
+import { getProjects, IProject } from "../api/projects"
 import Tasks from "../components/Tasks"
 
-function ProjectPage(props) {
-  const [projects, setProjects] = React.useState([])
+import { RouteComponentProps } from "react-router-dom"
+
+
+export interface ProjectPageProps extends RouteComponentProps<{ id: string }> {
+
+}
+
+const ProjectPage: React.FC<ProjectPageProps> = (props) => {
+  const [projects, setProjects] = React.useState<IProject[]>([])
   const [loadingProjects, setLoadingProjects] = React.useState(false)
 
   const { id: projectId } = props.match.params

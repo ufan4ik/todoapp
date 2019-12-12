@@ -1,5 +1,12 @@
 import { db } from "../firebase"
 
+
+export interface IProject {
+  id: string
+  name: string
+}
+
+
 /**
  * Получить список проектов
  */
@@ -9,7 +16,7 @@ export function getProjects() {
     .orderBy("order", "asc")
     .get()
     .then(querySnapshot =>
-      querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+      querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as IProject[]
     )
 }
 
@@ -17,7 +24,7 @@ export function getProjects() {
  * Получить данные по проекту
  * @param {*} id 
  */
-export function getProject(id) {
+export function getProject(id: string) {
   return db
     .collection("projects")
     .doc(id)
@@ -29,7 +36,7 @@ export function getProject(id) {
  * Добавить новый проект в конец списка
  * @param {*} payload 
  */
-export async function addProject(payload) {
+export async function addProject(payload: IProject) {
   const projectsRef = db.collection("projects")
 
   const lastProject = await projectsRef
@@ -48,6 +55,6 @@ export async function addProject(payload) {
  * Удалить проект
  * @param {*} id 
  */
-export function removeProject(id) {
+export function removeProject(id: string) {
   return db.collection("projects").doc(id).delete()
 }

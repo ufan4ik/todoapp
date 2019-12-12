@@ -2,8 +2,11 @@ import React, { useEffect, useCallback } from "react"
 import { connect } from "react-redux"
 
 import { fetchProjects, addProduct } from "../redux/actions/projects"
-
+import { ApplicationState } from '../redux/reducers'
 import ProjectForm from "../components/ProjectForm"
+
+import { IProject } from "../api/projects"
+import { RouteComponentProps } from "react-router-dom"
 
 import {
   Card,
@@ -21,7 +24,23 @@ const CardStyled = withStyles({
   }
 })(Card)
 
-function MainPage({ fetchProjects, addProduct, projects, history }) {
+
+interface StateProps {
+  projects: {
+    loading: boolean
+    data: IProject[]
+  }
+}
+
+interface DispatchProps {
+  fetchProjects: () => void
+  addProduct: () => void
+}
+
+type MainPageProps = StateProps & DispatchProps & RouteComponentProps
+
+
+const MainPage: React.FC<MainPageProps> = ({ fetchProjects, addProduct, projects, history }) => {
   const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
@@ -73,7 +92,12 @@ function MainPage({ fetchProjects, addProduct, projects, history }) {
   )
 }
 
-export default connect(state => ({ projects: state.projects }), {
+
+const mapStateToProps = (state: ApplicationState) => ({ projects: state.projects })
+
+const mapDispatch = {
   fetchProjects,
   addProduct
-})(MainPage)
+}
+
+export default connect(mapStateToProps, mapDispatch)(MainPage)

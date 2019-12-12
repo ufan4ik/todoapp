@@ -1,3 +1,5 @@
+import { Reducer } from 'redux'
+
 import {
   FETCH_PROJECTS_REQUEST,
   FETCH_PROJECTS_SUCCESS,
@@ -5,13 +7,20 @@ import {
   PROJECTS_ADD
 } from "../actions/projects"
 
-const initialState = {
+const initialState: ProjectsState = {
   data: [],
   loading: false,
   error: null
 }
 
-export default (state = initialState, action) => {
+export interface ProjectsState {
+  data: any[]
+  loading: boolean
+  error: any
+}
+
+
+const projectReducer: Reducer<ProjectsState> = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_PROJECTS_REQUEST:
       return { ...state, loading: true }
@@ -33,3 +42,5 @@ export default (state = initialState, action) => {
       return state
   }
 }
+
+export default projectReducer
