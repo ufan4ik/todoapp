@@ -11,9 +11,24 @@ import {
 } from "@material-ui/core"
 import CircularProgress from "@material-ui/core/CircularProgress"
 
+import { ApplicationState } from '../redux/reducers'
 import { fetchTasks } from "../redux/actions/tasks"
+import { ITask } from '../api/tasks';
 
-function Tasks({ projectId, fetchTasks, tasks }) {
+interface StateProps {
+  projectId: string
+  tasks: {
+    loading: boolean
+    data: ITask[]
+  }
+}
+interface DispatchProps {
+  fetchTasks: (n: string) => void
+}
+
+type TasksProps = StateProps & DispatchProps
+
+const Tasks: React.FC<TasksProps> = ({ projectId, fetchTasks, tasks }) => {
   useEffect(() => {
     if (projectId) {
       fetchTasks(projectId)
@@ -45,6 +60,8 @@ function Tasks({ projectId, fetchTasks, tasks }) {
   )
 }
 
-export default connect(state => ({ tasks: state.tasks }), {
+const mapStateToProps = (state: ApplicationState) => ({ tasks: state.tasks })
+const mapDispatch = {
   fetchTasks
-})(Tasks)
+}
+export default connect(mapStateToProps, mapDispatch)(Tasks)
