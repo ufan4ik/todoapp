@@ -5,7 +5,18 @@ import {
   PROJECTS_ADD
 } from "../actions/projects"
 
-const initialState = {
+export type Project = {
+  id: string
+  name: string
+}
+
+export interface IProjectsState {
+  data: Project[]
+  loading: boolean
+  error: any | null
+}
+
+const initialState: IProjectsState = {
   data: [],
   loading: false,
   error: null

@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from "react"
 import { connect } from "react-redux"
 
 import { fetchProjects, addProduct } from "../redux/actions/projects"
+import { RouteComponentProps } from "react-router-dom"
 
 import ProjectForm from "../components/ProjectForm"
 
@@ -14,6 +15,9 @@ import {
   withStyles
 } from "@material-ui/core"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { IStoreState } from "../redux/reducers/index"
+import { IProjectsState } from "../redux/reducers/projects"
+
 
 const CardStyled = withStyles({
   root: {
@@ -21,7 +25,13 @@ const CardStyled = withStyles({
   }
 })(Card)
 
-function MainPage({ fetchProjects, addProduct, projects, history }) {
+interface MainPageProps extends RouteComponentProps {
+  fetchProjects: () => void
+  addProduct: () => void
+  projects: IProjectsState
+}
+
+const MainPage: React.FC<MainPageProps> = ({ fetchProjects, addProduct, projects, history }) => {
   const [open, setOpen] = React.useState(false)
 
   useEffect(() => {
@@ -73,7 +83,7 @@ function MainPage({ fetchProjects, addProduct, projects, history }) {
   )
 }
 
-export default connect(state => ({ projects: state.projects }), {
+export default connect((state: IStoreState) => ({ projects: state.projects }), {
   fetchProjects,
   addProduct
 })(MainPage)
