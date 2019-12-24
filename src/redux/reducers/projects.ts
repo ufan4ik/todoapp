@@ -22,7 +22,7 @@ const initialState: IProjectsState = {
   error: null
 }
 
-export default (state = initialState, action) => {
+export default (state = initialState, action: any) => {
   switch (action.type) {
     case FETCH_PROJECTS_REQUEST:
       return { ...state, loading: true }
